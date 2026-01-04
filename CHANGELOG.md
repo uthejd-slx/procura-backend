@@ -56,6 +56,7 @@ All notable changes to this project will be documented in this file.
 - Notification badge now uses the real unread count only (demo count removed).
 - Added a dark border ring around the notifications icon.
 - Usage guide signoff wording now reflects assignee access (any role).
+- Production compose now exposes backend on host port 8001 to avoid conflicts.
 ### Added
 - Feedback dialog with floating action button, user list, and admin status/admin_note updates.
 

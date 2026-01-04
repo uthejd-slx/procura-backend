@@ -21,6 +21,7 @@ This project deploys on GitHub **Release published** events via `.github/workflo
 - `DOCKERHUB_USERNAME` (set by the workflow)
 - `IMAGE_TAG` (release tag set by the workflow)
 - Database vars in `.env.prod`: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, plus `POSTGRES_HOST=db`.
+ - Web service is exposed on host port `8001` (container port `8000`).
 
 ## Release Flow
 1. Create a GitHub Release.
