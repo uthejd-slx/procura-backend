@@ -31,6 +31,6 @@ This project deploys on GitHub **Release published** events via `.github/workflo
 3. Deployment runs on the droplet:
    - pulls the new image
    - runs migrations + collectstatic
-   - restarts the `web` service
+   - starts the `web` service and runs migrations/collectstatic via `exec`
    - health checks `/api/health/`
    - rolls back if health check fails

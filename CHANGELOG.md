@@ -57,6 +57,7 @@ All notable changes to this project will be documented in this file.
 - Added a dark border ring around the notifications icon.
 - Usage guide signoff wording now reflects assignee access (any role).
 - Production compose now exposes backend on host port 8001 to avoid conflicts.
+- Deployment workflow now starts the web container and runs migrations/collectstatic via `docker compose exec` to avoid SSH timeouts.
 ### Added
 - Feedback dialog with floating action button, user list, and admin status/admin_note updates.
 

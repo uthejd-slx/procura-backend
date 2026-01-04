@@ -65,14 +65,17 @@ jobs:
             echo "Ensuring database is up..."
             docker compose -f docker-compose.prod.yml --env-file .env.prod up -d db
 
+            echo "Waiting for database..."
+            docker compose -f docker-compose.prod.yml --env-file .env.prod run --rm web python manage.py wait_for_db
+
+            echo "Starting web service..."
+            docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --no-deps web
+
             echo "Applying migrations..."
-            docker compose -f docker-compose.prod.yml --env-file .env.prod run --rm web python manage.py migrate --noinput
+            docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T web python manage.py migrate --noinput
 
             echo "Collecting static files..."
-            docker compose -f docker-compose.prod.yml --env-file .env.prod run --rm web python manage.py collectstatic --noinput
-
-            echo "Restarting web service..."
-            docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --no-deps web
+            docker compose -f docker-compose.prod.yml --env-file .env.prod exec -T web python manage.py collectstatic --noinput
 
             echo "Running health check..."
             if curl --fail http://localhost:8001/api/health/; then
