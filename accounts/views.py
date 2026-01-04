@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
@@ -28,6 +30,7 @@ from .tokens import activation_token_generator
 
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 def _build_url(path: str, *, query: dict[str, str]) -> str:
@@ -62,20 +65,23 @@ class RegisterView(APIView):
         <p><a href="{activation_link}">Activate account</a></p>
         """
         debug_payload: dict[str, str] = {}
+        mail_sent = True
         try:
             send_html_email(to_email=user.email, subject=subject, html_body=html)
         except (GraphMailerConfigError, GraphMailerError) as exc:
+            mail_sent = False
             if settings.DEBUG:
                 debug_payload = {"activation_link": activation_link, "mail_error": str(exc)}
             else:
-                user.delete()
-                return Response(
-                    {"detail": _("Email service unavailable. Please try again later.")},
-                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
-                )
+                logger.warning("Activation email failed for user_id=%s email=%s error=%s", user.id, user.email, exc)
 
         return Response(
-            {"user": UserSerializer(user).data, "detail": _("Registration successful. Check email to activate."), **debug_payload},
+            {
+                "user": UserSerializer(user).data,
+                "detail": _("Registration successful. Check email to activate."),
+                "mail_sent": mail_sent,
+                **debug_payload,
+            },
             status=status.HTTP_201_CREATED,
         )
 

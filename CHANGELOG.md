@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Aligned UI to Release 1 scope: removed Teams/RFQ/Quotes/Reports dashboards and reorder hints from navigation and pages.
+- Registration no longer fails if activation email sending fails; response includes `mail_sent=false`.
 - Notifications bell badge now uses `/api/notifications/unread-count/`.
 - Bills UI no longer exposes approval workflow actions (CRUD only).
 - Attachments UI now supports BOM/PO/Bill only.

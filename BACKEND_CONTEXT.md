@@ -78,12 +78,12 @@ All endpoints are under `/api/`.
   - `password` (string)
   - optional: `first_name`, `last_name`
 - Responses:
-  - `201` (success): `{ user: {...}, detail: "..." }`
+  - `201` (success): `{ user: {...}, detail: "...", mail_sent: true|false }`
   - `400` (validation): `{ field: ["..."] }`
-  - `503` (prod, email system down): `{ detail: "Email service unavailable..." }`
 
 Notes:
 - On success, backend attempts to send an activation email.
+- Email failures do **not** block registration; `mail_sent=false` indicates delivery failed.
 - When `DJANGO_DEBUG=1` and Graph fails, response includes:
   - `activation_link` and `mail_error` (to unblock local frontend testing)
 
