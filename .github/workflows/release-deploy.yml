@@ -46,7 +46,7 @@ jobs:
           key: ${{ secrets.PROD_SERVER_SSH_KEY }}
           passphrase: ${{ secrets.PROD_SERVER_SSH_PASSPHRASE }}
           port: ${{ secrets.PROD_SERVER_SSH_PORT }}
-          command_timeout: 1200s
+          command_timeout: 2000s
           script: |
             set -e
             cd /home/ubuntu/procura_backend
