@@ -59,6 +59,14 @@ jobs:
               PREV_TAG=$(cat .last_deploy_tag)
             fi
 
+            write_tag() {
+              if [ -w . ]; then
+                echo "$1" > .last_deploy_tag
+              else
+                echo "$1" | sudo tee .last_deploy_tag >/dev/null
+              fi
+            }
+
             echo "Pulling image..."
             docker compose -f docker-compose.prod.yml --env-file .env.prod pull web
 
@@ -79,14 +87,14 @@ jobs:
 
             echo "Running health check..."
             if curl --fail http://localhost:8001/api/health/; then
-              echo "${IMAGE_TAG}" > .last_deploy_tag
+              write_tag "${IMAGE_TAG}"
             else
               echo "Health check failed."
               if [ -n "$PREV_TAG" ]; then
                 echo "Rolling back to $PREV_TAG..."
                 export IMAGE_TAG="$PREV_TAG"
                 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --no-deps web
-                echo "$PREV_TAG" > .last_deploy_tag
+                write_tag "$PREV_TAG"
               fi
               exit 1
             fi
