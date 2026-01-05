@@ -53,6 +53,7 @@ Key vars:
 - `PO_NUMBER_PREFIX`, `PO_NUMBER_PADDING` (purchase order number format)
 - `MEDIA_ROOT`, `MEDIA_URL` (file uploads; defaults to `backend/media`)
 - `API_RATE_USER`, `API_RATE_ANON` (request throttling)
+- `API_DEBUG_ERRORS=1` (include exception details in API error responses; default on in debug)
 - Microsoft Graph:
   - `GRAPH_TENANT_ID`, `GRAPH_CLIENT_ID`, `GRAPH_CLIENT_SECRET`, `GRAPH_SENDER`
   - optional tuning: `GRAPH_TIMEOUT_SECONDS`, `GRAPH_MAX_RETRIES`, `GRAPH_RETRY_BACKOFF_SECONDS`
@@ -323,6 +324,7 @@ Common failure:
 - `HTTP 401: invalid_client (AADSTS7000215)` means `GRAPH_CLIENT_SECRET` is wrong. In Azure App Registration, copy the *client secret Value* (not the Secret ID), update `backend/.env`, and restart the backend.
   - If your secret contains `#`, wrap it in quotes in `.env` or it will be truncated by dotenv.
   - If you previously exported env vars in your shell/system, the backend now forces `backend/.env` to override them.
+- `HTTP 403: ErrorAccessDenied` means the app lacks Graph Mail.Send permission or admin consent, or `GRAPH_SENDER` is not a valid mailbox in the tenant.
 
 ## Email Links (Frontend Routes)
 When `FRONTEND_BASE_URL` is set, the backend generates:

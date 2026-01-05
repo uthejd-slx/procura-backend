@@ -202,15 +202,21 @@ class BomViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], url_path="items")
     def add_item(self, request, pk=None):
         bom: Bom = self.get_object()
+        print(request.data)
         if bom.status not in {Bom.Status.DRAFT, Bom.Status.NEEDS_CHANGES} and not has_role(request.user, "admin"):
+            print("BOM is not editable in this state.")
             return Response({"detail": "Cannot add items in this state."}, status=status.HTTP_400_BAD_REQUEST)
         if (
             bom.owner_id != request.user.id
             and not _is_bom_collaborator(request.user, bom)
             and not has_role(request.user, "admin")
         ):
+            print("Not allowed.")
             return Response({"detail": "Not allowed."}, status=status.HTTP_403_FORBIDDEN)
         serializer = CreateBomItemSerializer(data=request.data)
+        if not serializer.is_valid():
+            print("Invalid data:", serializer.errors)
+        
         serializer.is_valid(raise_exception=True)
         item = BomItem.objects.create(bom=bom, **serializer.validated_data)
         log_event(bom=bom, actor=request.user, event_type="bom.item_added", data={"item_id": item.id})
