@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - Registration no longer fails if activation email sending fails; response includes `mail_sent=false`.
 - Improved Graph mail test command with clearer error guidance for missing config and permission issues.
 - Added a global API exception handler so frontend receives error details when `API_DEBUG_ERRORS=1`.
+- BOM item creation now accepts `data: null` and defaults it to `{}`.
 - Notifications bell badge now uses `/api/notifications/unread-count/`.
 - Bills UI no longer exposes approval workflow actions (CRUD only).
 - Attachments UI now supports BOM/PO/Bill only.

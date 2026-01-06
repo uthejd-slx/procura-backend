@@ -115,12 +115,21 @@ class ProcurementApprovalRequestSerializer(serializers.ModelSerializer):
 
 
 class CreateBomSerializer(serializers.ModelSerializer):
+    data = serializers.JSONField(required=False, allow_null=True)
+
     class Meta:
         model = Bom
         fields = ("template", "title", "project", "data")
 
+    def validate_data(self, value):
+        if value is None:
+            return {}
+        return value
+
 
 class CreateBomItemSerializer(serializers.ModelSerializer):
+    data = serializers.JSONField(required=False, allow_null=True)
+
     class Meta:
         model = BomItem
         fields = (
@@ -137,6 +146,11 @@ class CreateBomItemSerializer(serializers.ModelSerializer):
             "notes",
             "data",
         )
+
+    def validate_data(self, value):
+        if value is None:
+            return {}
+        return value
 
 
 class RequestSignoffSerializer(serializers.Serializer):

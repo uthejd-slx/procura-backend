@@ -174,6 +174,7 @@ Schema extras for UI:
 - Draft capacity: controlled by `BOM_MAX_DRAFTS_PER_USER` (default 15, `0` = unlimited)
 - `PATCH /api/boms/:id/` (only when DRAFT/NEEDS_CHANGES; owner/collaborator/admin)
 - `POST /api/boms/:id/items/` (add item)
+  - `data` is optional; if `null` it defaults to `{}`.
 - `POST /api/boms/:id/request-signoff/` (assign signoff for some/all items)
 - `POST /api/boms/:id/request-procurement-approval/` (creates approval request; all must approve)
 - `POST /api/boms/:id/cancel/` (cancels pending signoff/approval, resets to DRAFT; only BOM owner or procurement)
