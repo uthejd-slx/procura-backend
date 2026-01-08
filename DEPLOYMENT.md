@@ -22,6 +22,7 @@ This project deploys on GitHub **Release published** events via `.github/workflo
 - `IMAGE_TAG` (release tag set by the workflow)
 - Database vars in `.env.prod`: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, plus `POSTGRES_HOST=db`.
  - Web service is exposed on host port `8001` (container port `8000`).
+ - Web container runs WSGI via `gunicorn` with SSE support (single-instance, in-memory channel layer).
 
 ## Release Flow
 1. Create a GitHub Release.

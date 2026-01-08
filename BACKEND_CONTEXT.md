@@ -50,6 +50,7 @@ Key vars:
 - `FRONTEND_BASE_URL` (preferred for activation/reset links)
 - `NOTIFICATIONS_SEND_EMAIL=1` (optional; mirrors in-app notifications to email via Graph)
   - Per-user toggle: `notifications_email_enabled` must be `true` on the profile
+- `NOTIFICATIONS_POLL_LOG=1` (optional; logs each unread-count request for polling verification)
 - `PO_NUMBER_PREFIX`, `PO_NUMBER_PADDING` (purchase order number format)
 - `MEDIA_ROOT`, `MEDIA_URL` (file uploads; defaults to `backend/media`)
 - `API_RATE_USER`, `API_RATE_ANON` (request throttling)
@@ -143,6 +144,7 @@ Filters for `GET /api/notifications/`:
 - `level=INFO,SUCCESS,WARNING,ERROR`
 - `created_from`, `created_to` (ISO date/datetime)
 
+
 ## Feedback
 Requires Authorization: `Bearer <access>`.
 - `POST /api/feedback/` (create)
@@ -213,6 +215,9 @@ Filters for `GET /api/bom-items/`:
 ### Procurement Approval Inbox
 - `GET /api/procurement-approvals/` (admin sees all; others see assigned)
 - `POST /api/procurement-approvals/:id/decide/` (APPROVED/NEEDS_CHANGES; all must approve)
+
+Responses include:
+- `bom_id` on each approval record (via `request.bom_id`).
 
 Notifications:
 - When a BOM is fully approved, the BOM owner and all users with the `procurement` role receive an in-app notification (email optional).

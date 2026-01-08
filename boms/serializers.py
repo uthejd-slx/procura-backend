@@ -99,10 +99,12 @@ class BomEventSerializer(serializers.ModelSerializer):
 
 
 class ProcurementApprovalSerializer(serializers.ModelSerializer):
+    bom_id = serializers.IntegerField(source="request.bom_id", read_only=True)
+
     class Meta:
         model = ProcurementApproval
-        fields = ("id", "request", "approver", "status", "comment", "decided_at")
-        read_only_fields = ("id", "request", "approver", "decided_at")
+        fields = ("id", "request", "bom_id", "approver", "status", "comment", "decided_at")
+        read_only_fields = ("id", "request", "bom_id", "approver", "decided_at")
 
 
 class ProcurementApprovalRequestSerializer(serializers.ModelSerializer):

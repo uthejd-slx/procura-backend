@@ -11,7 +11,6 @@ from .models import Notification
 
 logger = logging.getLogger(__name__)
 
-
 def notify_user(
     *,
     recipient,

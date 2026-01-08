@@ -81,6 +81,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'procurement_tool.urls'
 
+ASGI_APPLICATION = "procurement_tool.asgi.application"
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -202,6 +204,8 @@ GRAPH_RETRY_BACKOFF_SECONDS = float(os.getenv("GRAPH_RETRY_BACKOFF_SECONDS", "1.
 
 # In-app notifications can optionally be mirrored to email (best-effort).
 NOTIFICATIONS_SEND_EMAIL = os.getenv("NOTIFICATIONS_SEND_EMAIL", "0") == "1"
+# Temporary request logging for frontend polling verification.
+NOTIFICATIONS_POLL_LOG = os.getenv("NOTIFICATIONS_POLL_LOG", "0") == "1"
 
 # Purchase requests / BOMs
 # 0 => unlimited drafts per user
@@ -233,6 +237,7 @@ LOGGING = {
 
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:8000").rstrip("/")
 FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "").rstrip("/")
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

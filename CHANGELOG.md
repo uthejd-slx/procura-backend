@@ -21,6 +21,9 @@ All notable changes to this project will be documented in this file.
 - Improved Graph mail test command with clearer error guidance for missing config and permission issues.
 - Added a global API exception handler so frontend receives error details when `API_DEBUG_ERRORS=1`.
 - BOM item creation now accepts `data: null` and defaults it to `{}`.
+- Notifications now use polling (SSE removed).
+- Added optional polling log switch (`NOTIFICATIONS_POLL_LOG`) for unread-count requests.
+- Procurement approval responses now include `bom_id`.
 - Notifications bell badge now uses `/api/notifications/unread-count/`.
 - Bills UI no longer exposes approval workflow actions (CRUD only).
 - Attachments UI now supports BOM/PO/Bill only.

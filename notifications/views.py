@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import logging
 from datetime import datetime, time
 
+from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime
 from rest_framework import permissions, status, viewsets
@@ -12,6 +14,9 @@ from core.pagination import StandardResultsSetPagination
 
 from .models import Notification
 from .serializers import NotificationSerializer
+
+
+logger = logging.getLogger("django")
 
 
 def _parse_dt(value: str | None, *, end_of_day: bool = False):
@@ -79,4 +84,6 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=["get"], url_path="unread-count")
     def unread_count(self, request):
         count = self.get_queryset().filter(read_at__isnull=True).count()
+        if getattr(settings, "NOTIFICATIONS_POLL_LOG", False):
+            logger.info("notifications.unread_count user_id=%s unread=%s", request.user.id, count)
         return Response({"unread": count}, status=status.HTTP_200_OK)
