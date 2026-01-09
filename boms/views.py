@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime
-from rest_framework import permissions, status, viewsets
+from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -81,6 +81,12 @@ def _can_manage_collaborators(user, bom: Bom) -> bool:
 
 
 def _can_request_flow(user, bom: Bom) -> bool:
+    if not user or not getattr(user, "is_authenticated", False):
+        return False
+    return bom.owner_id == user.id or _is_bom_collaborator(user, bom) or has_role(user, "admin")
+
+
+def _can_edit_bom(user, bom: Bom) -> bool:
     if not user or not getattr(user, "is_authenticated", False):
         return False
     return bom.owner_id == user.id or _is_bom_collaborator(user, bom) or has_role(user, "admin")
@@ -419,7 +425,7 @@ class BomViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Unsupported export format."}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class BomItemViewSet(viewsets.ReadOnlyModelViewSet):
+class BomItemViewSet(mixins.UpdateModelMixin, viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = BomItemSerializer
     pagination_class = StandardResultsSetPagination
@@ -456,6 +462,21 @@ class BomItemViewSet(viewsets.ReadOnlyModelViewSet):
             qs = qs.filter(Q(name__icontains=search_term) | Q(description__icontains=search_term))
 
         return qs.order_by("-updated_at")
+
+    def update(self, request, *args, **kwargs):
+        item: BomItem = self.get_object()
+        bom = item.bom
+        if bom.status not in {Bom.Status.DRAFT, Bom.Status.NEEDS_CHANGES} and not has_role(request.user, "admin"):
+            return Response({"detail": "BOM is not editable in this state."}, status=status.HTTP_400_BAD_REQUEST)
+        if not _can_edit_bom(request.user, bom):
+            return Response({"detail": "Not allowed."}, status=status.HTTP_403_FORBIDDEN)
+        serializer = CreateBomItemSerializer(item, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(BomItemSerializer(item).data, status=status.HTTP_200_OK)
+
+    def partial_update(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
     @action(detail=True, methods=["post"], url_path="signoff")
     def decide_signoff(self, request, pk=None):

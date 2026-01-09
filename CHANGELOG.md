@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - Notifications now use polling (SSE removed).
 - Added optional polling log switch (`NOTIFICATIONS_POLL_LOG`) for unread-count requests.
 - Approvers can now view BOMs they are assigned to approve (read-only).
+- BOM items now support PATCH updates for quantity and related fields.
 - Procurement approval responses now include `bom_id`.
 - Notifications bell badge now uses `/api/notifications/unread-count/`.
 - Bills UI no longer exposes approval workflow actions (CRUD only).

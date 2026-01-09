@@ -178,6 +178,7 @@ Schema extras for UI:
 - Approvers can view BOMs they are assigned to approve (read-only unless owner/collaborator).
 - `POST /api/boms/:id/items/` (add item)
   - `data` is optional; if `null` it defaults to `{}`.
+- `PATCH /api/bom-items/:id/` (update item fields like `quantity`, `unit_price`, etc.; owner/collaborator/admin; only in DRAFT/NEEDS_CHANGES)
 - `POST /api/boms/:id/request-signoff/` (assign signoff for some/all items)
 - `POST /api/boms/:id/request-procurement-approval/` (creates approval request; all must approve)
 - `POST /api/boms/:id/cancel/` (cancels pending signoff/approval, resets to DRAFT; only BOM owner or procurement)
