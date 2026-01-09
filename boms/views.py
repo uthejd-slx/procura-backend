@@ -124,7 +124,10 @@ class BomViewSet(viewsets.ModelViewSet):
         if has_role(user, "admin") or has_role(user, "procurement"):
             qs = Bom.objects.all()
         else:
-            qs = Bom.objects.filter(Q(owner=user) | Q(collaborators=user)).distinct()
+            access_filter = Q(owner=user) | Q(collaborators=user)
+            if has_role(user, "approver"):
+                access_filter |= Q(approval_requests__approvals__approver=user)
+            qs = Bom.objects.filter(access_filter).distinct()
 
         params = self.request.query_params
         status_param = params.get("status")
